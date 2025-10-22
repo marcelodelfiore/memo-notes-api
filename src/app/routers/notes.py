@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime
-from typing import List, Optional
-
-from fastapi import APIRouter, HTTPException, Query, Response
-from pydantic import BaseModel, Field
 import asyncio
+import hashlib
+from datetime import datetime, UTC
+from typing import Optional
+
+from fastapi import APIRouter, Header, HTTPException, Query, Response
+from pydantic import BaseModel, Field
 
 router = APIRouter()
 
@@ -15,6 +16,7 @@ _next_id: int = 1
 _lock = asyncio.Lock()
 
 
+# ---------------- Models ----------------
 class NoteCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     content: str = Field("", max_length=10_000)
@@ -36,6 +38,14 @@ class Note(BaseModel):
     updated_at: datetime
 
 
+class NotesPage(BaseModel):
+    items: list[Note]
+    total: int
+    limit: int
+    offset: int
+
+
+# ---------------- Helpers ----------------
 def _find_index(note_id: int) -> int:
     for idx, n in enumerate(_notes):
         if n.id == note_id:
@@ -43,11 +53,19 @@ def _find_index(note_id: int) -> int:
     return -1
 
 
+def _note_etag(note: Note) -> str:
+    h = hashlib.sha256(
+        f"{note.id}:{note.title}:{note.content}:{note.updated_at.isoformat()}".encode()
+    ).hexdigest()
+    return f'W/"{h}"'  # weak ETag is fine here
+
+
+# ---------------- Routes ----------------
 @router.post("", response_model=Note, status_code=201)
 async def create_note(payload: NoteCreate) -> Note:
     global _next_id
     async with _lock:
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         note = Note(
             id=_next_id,
             title=payload.title,
@@ -61,13 +79,14 @@ async def create_note(payload: NoteCreate) -> Note:
         return note
 
 
-@router.get("", response_model=List[Note])
+@router.get("", response_model=NotesPage)
 async def list_notes(
     q: Optional[str] = Query(default=None, description="Search in title or content"),
     tag: Optional[str] = Query(default=None, description="Filter by a single tag"),
     limit: int = Query(default=100, ge=1, le=1000),
     offset: int = Query(default=0, ge=0),
-) -> list[Note]:
+) -> NotesPage:
+    """List notes with optional search, tag filter, and pagination."""
     data = _notes
 
     if q:
@@ -77,16 +96,26 @@ async def list_notes(
     if tag:
         data = [n for n in data if tag in n.tags]
 
-    # Simple pagination
-    return data[offset : offset + limit]
+    total = len(data)
+    items = data[offset : offset + limit]
+
+    return NotesPage(items=items, total=total, limit=limit, offset=offset)
 
 
-@router.get("/{note_id}", response_model=Note)
-async def get_note(note_id: int) -> Note:
+@router.get("/{note_id}")
+async def get_note(note_id: int, if_none_match: str | None = Header(default=None)) -> Response:
     idx = _find_index(note_id)
     if idx < 0:
         raise HTTPException(status_code=404, detail="Note not found")
-    return _notes[idx]
+    note = _notes[idx]
+    etag = _note_etag(note)
+    if if_none_match == etag:
+        return Response(status_code=304, headers={"ETag": etag})
+    return Response(
+        content=note.model_dump_json(),
+        media_type="application/json",
+        headers={"ETag": etag},
+    )
 
 
 @router.put("/{note_id}", response_model=Note)
@@ -102,7 +131,7 @@ async def update_note(note_id: int, payload: NoteUpdate) -> Note:
                 "title": payload.title,
                 "content": payload.content,
                 "tags": payload.tags,
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(UTC),
             }
         )
         _notes[idx] = updated
