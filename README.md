@@ -1,7 +1,6 @@
-````markdown
 # memo-notes-api
 
-A minimal **FastAPI CRUD API** for notes, designed for clarity and maintainability.
+A minimal **FastAPI CRUD API** for notes, designed for clarity and maintainability.  
 It demonstrates good REST practices, versioned endpoints, and developer tooling with:
 
 - **Poetry** – dependency & environment management
@@ -16,7 +15,7 @@ It demonstrates good REST practices, versioned endpoints, and developer tooling 
 
 ## Quickstart
 
-```bash
+```
 # clone your repo or copy project
 cd ~/repos/python/memo-notes-api
 
@@ -26,13 +25,12 @@ poetry install
 # run development server (with auto-reload)
 poetry run task dev
 ```
-````
 
 Once running, visit:
 
-  * Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-  * ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-  * Health check: [http://127.0.0.1:8000/healthz](http://127.0.0.1:8000/healthz) *(if enabled)*
+- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- Health check: [http://127.0.0.1:8000/healthz](http://127.0.0.1:8000/healthz) *(if enabled)*
 
 -----
 
@@ -41,7 +39,7 @@ Once running, visit:
 Base URL: `http://127.0.0.1:8000/v1`
 
 | Method | Endpoint | Description |
-| ---------: | :------------ | :-------------------------------------------- |
+| :------ | :-------- | :-------------------------------------------- |
 | **POST** | `/notes` | Create a new note |
 | **GET** | `/notes` | List notes (search, filter, pagination) |
 | **GET** | `/notes/{id}` | Retrieve a note by ID (supports ETag caching) |
@@ -50,7 +48,7 @@ Base URL: `http://127.0.0.1:8000/v1`
 
 ### Data model
 
-```json
+```
 {
   "id": 1,
   "title": "Meeting notes",
@@ -65,7 +63,7 @@ Base URL: `http://127.0.0.1:8000/v1`
 
 `GET /v1/notes` returns:
 
-```json
+```
 {
   "items": [],
   "total": 0,
@@ -78,15 +76,15 @@ Base URL: `http://127.0.0.1:8000/v1`
 
 ## Testing the API (via cURL or Insomnia)
 
-You can interact with the API manually using **curl** or a GUI tool such as **Insomnia** or **Postman**.
+You can interact with the API manually using **curl** or GUI tools such as **Insomnia** or **Postman**.
 
 ### Using cURL
 
-```bash
+```
 # Create a new note
 curl -X POST http://127.0.0.1:8000/v1/notes \
-      -H "Content-Type: application/json" \
-      -d '{"title": "First Note", "content": "Hello World", "tags": ["demo"]}'
+     -H "Content-Type: application/json" \
+     -d '{"title": "First Note", "content": "Hello World", "tags": ["demo"]}'
 
 # List all notes
 curl http://127.0.0.1:8000/v1/notes | jq
@@ -96,8 +94,8 @@ curl http://127.0.0.1:8000/v1/notes/1 | jq
 
 # Update a note
 curl -X PUT http://127.0.0.1:8000/v1/notes/1 \
-      -H "Content-Type: application/json" \
-      -d '{"title": "Updated", "content": "Updated content", "tags": ["edited"]}'
+     -H "Content-Type: application/json" \
+     -d '{"title": "Updated", "content": "Updated content", "tags": ["edited"]}'
 
 # Delete a note
 curl -X DELETE http://127.0.0.1:8000/v1/notes/1 -v
@@ -105,23 +103,21 @@ curl -X DELETE http://127.0.0.1:8000/v1/notes/1 -v
 
 ### Using Insomnia
 
-1.  Open **Insomnia** and create a new workspace.
+1. Open **Insomnia** and create a new workspace.  
+2. Set an environment variable:
 
-2.  Set an environment variable:
+   ```
+   { "base_url": "http://127.0.0.1:8000/v1" }
+   ```
+3. Create the following requests:
 
-    ```json
-    { "base_url": "http://127.0.0.1:8000/v1" }
-    ```
+   - `POST {{ base_url }}/notes`
+   - `GET {{ base_url }}/notes`
+   - `GET {{ base_url }}/notes/1`
+   - `PUT {{ base_url }}/notes/1`
+   - `DELETE {{ base_url }}/notes/1`
 
-3.  Create the following requests:
-
-      * `POST {{ base_url }}/notes`
-      * `GET {{ base_url }}/notes`
-      * `GET {{ base_url }}/notes/1`
-      * `PUT {{ base_url }}/notes/1`
-      * `DELETE {{ base_url }}/notes/1`
-
-4.  Run each request and check the responses.
+4. Run each request and check the responses.
 
 You can also import a ready-made JSON Insomnia collection (available in `/insomnia_collection.json`).
 
@@ -133,25 +129,25 @@ The project uses **pytest** for testing, with task aliases defined in `pyproject
 
 ### Run all tests
 
-```bash
+```
 poetry run task test
 ```
 
 ### Run tests with coverage report
 
-```bash
+```
 poetry run task cov
 ```
 
 ### Run a specific test
 
-```bash
+```
 poetry run pytest -k test_create_and_get_note -v
 ```
 
 ### Show test output (logs)
 
-```bash
+```
 poetry run pytest -s
 ```
 
@@ -171,13 +167,13 @@ tests/test_notes.py ...                                  [100%]
 
 Check code style:
 
-```bash
+```
 poetry run task lint
 ```
 
 Auto-fix imports & formatting:
 
-```bash
+```
 poetry run task fmt
 ```
 
@@ -186,7 +182,7 @@ poetry run task fmt
 ## Taskipy commands
 
 | Task | Description |
-| ---------------------- | -------------------------------- |
+| :--- | :----------- |
 | `poetry run task list` | Show available tasks |
 | `poetry run task dev` | Run FastAPI server (reload mode) |
 | `poetry run task lint` | Run Ruff lint checks |
@@ -219,11 +215,11 @@ memo-notes-api/
 
 ## Developer notes
 
-  * The API stores data **in memory**; it resets every time the server restarts.
-  * Versioned routes (`/v1/notes`) prepare the codebase for future backward-compatible releases.
-  * ETags are included in note retrievals to support **client-side caching**.
-  * Pagination envelope (`items`, `total`, `limit`, `offset`) is returned for list endpoints.
-  * The Docker setup supports both **production** and **live-reload development** modes.
+- The API stores data **in memory**; it resets every time the server restarts.
+- Versioned routes (`/v1/notes`) prepare the codebase for future backward-compatible releases.
+- ETags are included in note retrievals to support **client-side caching**.
+- Pagination envelope (`items`, `total`, `limit`, `offset`) is returned for list endpoints.
+- The Docker setup supports both **production** and **live-reload development** modes.
 
 -----
 
@@ -233,7 +229,7 @@ This project includes a preconfigured **Docker and Docker Compose** setup.
 
 ### Build & run (production-like)
 
-```bash
+```
 docker compose up --build api
 ```
 
@@ -241,7 +237,7 @@ Then open [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ### Run in dev mode with live reload
 
-```bash
+```
 docker compose --profile dev up --build api-dev
 ```
 
@@ -249,13 +245,12 @@ The `src/` folder is mounted, so code changes trigger hot reload.
 
 ### Stop & clean up
 
-```bash
+```
 docker compose down
 ```
 
 -----
 
 *Developed using FastAPI and Poetry.*
+```
 
-```
-```
