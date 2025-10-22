@@ -1,18 +1,31 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
-.env
-.venv
-.venv*/
+*.so
+*.egg-info/
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Poetry
-poetry.lock
+# Virtualenvs
+.venv/
+venv/
 
-# IDE
+# Node / misc
+node_modules/
+dist/
+build/
+
+# VCS / editors
+.git/
+.gitignore
 .vscode/
 .idea/
+
+# OS
+.DS_Store
+
+# Poetry
+poetry.lock

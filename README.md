@@ -10,6 +10,7 @@ It demonstrates good REST practices, versioned endpoints, and developer tooling 
 -  **Taskipy** – developer task runner
 -  **Pytest** – testing & coverage
 -  **Ruff** – linting & auto-formatting
+-  **Docker Compose** – for easy containerized execution
 
 ---
 
@@ -78,7 +79,7 @@ Base URL: `http://127.0.0.1:8000/v1`
 
 You can interact with the API manually using **curl** or a GUI tool such as **Insomnia** or **Postman**.
 
-### ▶ Using cURL
+### Using cURL
 
 ```bash
 # Create a new note
@@ -107,28 +108,18 @@ curl -X DELETE http://127.0.0.1:8000/v1/notes/1 -v
 2. Set an environment variable:
 
    ```json
-   {
-     "base_url": "http://127.0.0.1:8000/v1"
-   }
+   { "base_url": "http://127.0.0.1:8000/v1" }
    ```
 3. Create the following requests:
 
    * `POST {{ base_url }}/notes`
-
-     ```json
-     {
-       "title": "Hello",
-       "content": "World",
-       "tags": ["demo"]
-     }
-     ```
    * `GET {{ base_url }}/notes`
    * `GET {{ base_url }}/notes/1`
    * `PUT {{ base_url }}/notes/1`
    * `DELETE {{ base_url }}/notes/1`
-4. Run each and check responses in the right panel.
+4. Run each request and check the responses.
 
-If you prefer, you can import a ready-made JSON Insomnia collection (available in the repo under `/insomnia_collection.json`).
+You can also import a ready-made JSON Insomnia collection (available in `/insomnia_collection.json`).
 
 ---
 
@@ -206,6 +197,9 @@ poetry run task fmt
 ```
 memo-notes-api/
 ├─ pyproject.toml               # Poetry + Ruff + Taskipy configuration
+├─ docker-compose.yml           # Multi-service Docker config
+├─ Dockerfile                   # Container build recipe
+├─ .dockerignore                # Files to exclude from Docker build
 ├─ README.md
 ├─ src/
 │  └─ app/
@@ -225,16 +219,34 @@ memo-notes-api/
 * Versioned routes (`/v1/notes`) prepare the codebase for future backward-compatible releases.
 * ETags are included in note retrievals to support **client-side caching**.
 * Pagination envelope (`items`, `total`, `limit`, `offset`) is returned for list endpoints.
+* The Docker setup supports both **production** and **live-reload development** modes.
 
 ---
 
-## (Optional) Run with Docker
+## Run with Docker
 
-To make it portable and self-contained:
+This project includes a preconfigured **Docker and Docker Compose** setup.
+
+### Build & run (production-like)
 
 ```bash
-docker build -t memo-notes-api .
-docker run -p 8000:8000 memo-notes-api
+docker compose up --build api
+```
+
+Then open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### Run in dev mode with live reload
+
+```bash
+docker compose --profile dev up --build api-dev
+```
+
+The `src/` folder is mounted, so code changes trigger hot reload.
+
+### Stop & clean up
+
+```bash
+docker compose down
 ```
 
 ---
