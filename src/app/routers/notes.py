@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
-from datetime import datetime, UTC
-from typing import Optional
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Header, HTTPException, Query, Response
 from pydantic import BaseModel, Field
@@ -11,7 +10,7 @@ from pydantic import BaseModel, Field
 router = APIRouter()
 
 # ---------------- In-memory storage ----------------
-_notes: list["Note"] = []
+_notes: list[Note] = []
 _next_id: int = 1
 _lock = asyncio.Lock()
 
@@ -81,8 +80,8 @@ async def create_note(payload: NoteCreate) -> Note:
 
 @router.get("", response_model=NotesPage)
 async def list_notes(
-    q: Optional[str] = Query(default=None, description="Search in title or content"),
-    tag: Optional[str] = Query(default=None, description="Filter by a single tag"),
+    q: str | None = Query(default=None, description="Search in title or content"),
+    tag: str | None = Query(default=None, description="Filter by a single tag"),
     limit: int = Query(default=100, ge=1, le=1000),
     offset: int = Query(default=0, ge=0),
 ) -> NotesPage:

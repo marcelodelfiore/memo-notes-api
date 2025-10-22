@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from app.routers.notes import router as notes_router
-from fastapi import status
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from app.routers.notes import router as notes_router
 
 app = FastAPI(
     title="Memo Notes API",
