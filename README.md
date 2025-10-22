@@ -25,6 +25,7 @@ poetry install
 
 # run development server (with auto-reload)
 poetry run task dev
+```
 ````
 
 Once running, visit:
