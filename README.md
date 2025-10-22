@@ -25,7 +25,7 @@ poetry install
 
 # run development server (with auto-reload)
 poetry run task dev
-```
+````
 
 Once running, visit:
 
@@ -252,3 +252,11 @@ docker compose down
 ---
 
 *Developed using FastAPI and Poetry.*
+
+```
+
+---
+
+Would you like me to also generate a **Makefile** with equivalent shortcuts (`make dev`, `make test`, `make docker-run`, etc.) so Linux users can avoid remembering the full Poetry/Docker commands?
+```
+
