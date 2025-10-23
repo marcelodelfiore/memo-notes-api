@@ -1,6 +1,6 @@
 # memo-notes-api
 
-A minimal **FastAPI CRUD API** for notes, designed for clarity and maintainability.  
+A minimal **FastAPI CRUD API** for notes, designed for clarity and maintainability.
 It demonstrates good REST practices, versioned endpoints, and developer tooling with:
 
 - **Poetry** – dependency & environment management
@@ -28,7 +28,7 @@ poetry run task dev
 
 Once running, visit:
 
-- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- Swagger UI: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 - ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 - Health check: [http://127.0.0.1:8000/healthz](http://127.0.0.1:8000/healthz) *(if enabled)*
 
@@ -103,7 +103,7 @@ curl -X DELETE http://127.0.0.1:8000/v1/notes/1 -v
 
 ### Using Insomnia
 
-1. Open **Insomnia** and create a new workspace.  
+1. Open **Insomnia** and create a new workspace.
 2. Set an environment variable:
 
    ```
